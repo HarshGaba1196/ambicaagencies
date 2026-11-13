@@ -5,7 +5,7 @@ const inr = (n) => "₹" + n.toLocaleString("en-IN");
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const param = (k) => new URLSearchParams(location.search).get(k);
 const icon = (key) => `<svg class="icon-svg" viewBox="0 0 100 100" aria-hidden="true">${ICONS[key] || ""}</svg>`;
-const visual = (prod) => prod.image ? `<img src="${prod.image}" alt="${esc(prod.name)}" />` : icon(prod.icon);
+const visual = (prod) => prod.image ? `<img src="${prod.image}" alt="${esc(prod.name)}" loading="lazy" />` : icon(prod.icon);
 const catUrl = (cat, sub) => `shop.html?cat=${cat}${sub ? `&sub=${sub}` : ""}`;
 const productUrl = (id) => `product.html?id=${id}`;
 

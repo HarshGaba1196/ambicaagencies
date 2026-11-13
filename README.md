@@ -22,6 +22,9 @@ Everything lives in **`js/data.js`**:
 - `CATEGORIES` — categories and their sub-types (menus, filters and pages update automatically)
 - `PRODUCTS` — one line per product. Add `image: "assets/products/xyz.jpg"` to show a real photo instead of the gold icon.
 
+- `PHOTOS` — product photos (currently free photos from [Unsplash](https://unsplash.com/license), loaded from Unsplash's servers). Replace with the client's own photos by adding `image: "assets/products/xyz.jpg"` to a product.
+- `HERO_SLIDES` — which products appear in the moving slider at the top of the home page.
+
 > Products, prices and contact details are currently placeholders.
 
 ## Run locally

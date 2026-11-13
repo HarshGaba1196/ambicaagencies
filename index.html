@@ -16,26 +16,15 @@
   <div id="site-header"></div>
 
   <main>
-    <section class="hero">
-      <div class="container hero-inner">
-        <div class="hero-copy">
-          <p class="eyebrow">Hardware & Kitchen Accessories</p>
-          <h1>Finishing touches,<br /><span class="gold">built to last.</span></h1>
-          <p class="lead">Architectural hardware, cabinet fittings and modular kitchen accessories — trusted by homeowners, carpenters and interior designers.</p>
-          <div class="hero-cta">
-            <a href="shop.html" class="btn btn-gold">Shop all products</a>
-            <a href="contact.html" class="btn btn-ghost">Bulk enquiry</a>
-          </div>
-          <ul class="trust">
-            <li><b id="productTotal">50+</b><span>Products</span></li>
-            <li><b id="catTotal">11</b><span>Categories</span></li>
-            <li><b>GST</b><span>Invoices</span></li>
-          </ul>
-        </div>
-        <div class="hero-art">
-          <div class="ring"><img src="assets/logo.webp" alt="Ambica Agencies logo" /></div>
-        </div>
-      </div>
+    <section class="slider" id="slider" aria-roledescription="carousel" aria-label="Featured products">
+      <div class="slides" id="slides"></div>
+      <button class="sl-arrow sl-prev" id="slPrev" aria-label="Previous slide">‹</button>
+      <button class="sl-arrow sl-next" id="slNext" aria-label="Next slide">›</button>
+      <div class="container"><div class="sl-tabs" id="slTabs" role="tablist"></div></div>
+    </section>
+
+    <section class="marquee" aria-label="Trending products">
+      <div class="marquee-track" id="marquee"></div>
     </section>
 
     <section class="section">
@@ -91,8 +80,69 @@
   <script src="js/common.js"></script>
   <script>
     renderLayout("home");
-    $("#productTotal").textContent = PRODUCTS.length + "+";
-    $("#catTotal").textContent = CATEGORIES.length;
+
+    // ---------- Hero slider ----------
+    const slides = HERO_SLIDES.map((id) => PRODUCTS.find((x) => x.id === id)).filter(Boolean);
+    $("#slides").innerHTML = slides.map((prod, i) => {
+      const cat = getCategory(prod.cat);
+      const off = Math.round((1 - prod.price / prod.mrp) * 100);
+      return `<article class="slide" role="group" aria-roledescription="slide" aria-label="${i + 1} of ${slides.length}">
+        <div class="container slide-inner">
+          <div class="slide-copy">
+            <p class="eyebrow">${cat.name}</p>
+            <h2>${esc(prod.name)}</h2>
+            <p class="lead">${esc(prod.desc)}</p>
+            <div class="slide-price"><b>${inr(prod.price)}</b><s>${inr(prod.mrp)}</s>${off > 0 ? `<span class="save">${off}% off</span>` : ""}</div>
+            <div class="hero-cta">
+              <a href="${productUrl(prod.id)}" class="btn btn-gold">Shop now</a>
+              <a href="${catUrl(cat.id)}" class="btn btn-ghost">View all ${esc(cat.name)}</a>
+            </div>
+          </div>
+          <a class="slide-media" href="${productUrl(prod.id)}" tabindex="-1">
+            ${prod.photo ? `<img src="${photoUrl(prod.photo, 1100)}" alt="${esc(prod.name)}" ${i ? 'loading="lazy"' : ""} />` : icon(prod.icon)}
+          </a>
+        </div>
+      </article>`;
+    }).join("");
+    $("#slTabs").innerHTML = slides.map((prod, i) =>
+      `<button class="sl-tab" role="tab" data-i="${i}"><span>${getCategory(prod.cat).name}</span><i></i></button>`).join("");
+
+    const slideEls = $$(".slide"), tabEls = $$(".sl-tab");
+    let cur = 0;
+    function go(i) {
+      cur = (i + slides.length) % slides.length;
+      slideEls.forEach((el, k) => { el.classList.toggle("active", k === cur); el.setAttribute("aria-hidden", k !== cur); });
+      tabEls.forEach((el, k) => {
+        el.classList.remove("active"); el.setAttribute("aria-selected", k === cur);
+        if (k === cur) { void el.offsetWidth; el.classList.add("active"); } // restart progress bar
+      });
+      const bar = $("#slTabs"), t = tabEls[cur];
+      bar.scrollTo({ left: t.offsetLeft - (bar.clientWidth - t.offsetWidth) / 2, behavior: "smooth" });
+    }
+    // Each tab's progress bar drives auto-advance, so pausing the bar pauses the slider.
+    tabEls.forEach((t) => t.querySelector("i").addEventListener("animationend", () => go(cur + 1)));
+    $("#slTabs").addEventListener("click", (e) => { const t = e.target.closest(".sl-tab"); if (t) go(+t.dataset.i); });
+    $("#slPrev").onclick = () => go(cur - 1);
+    $("#slNext").onclick = () => go(cur + 1);
+    const slider = $("#slider");
+    slider.addEventListener("mouseenter", () => slider.classList.add("paused"));
+    slider.addEventListener("mouseleave", () => slider.classList.remove("paused"));
+    let touchX = null;
+    slider.addEventListener("touchstart", (e) => { touchX = e.touches[0].clientX; }, { passive: true });
+    slider.addEventListener("touchend", (e) => {
+      if (touchX === null) return;
+      const dx = e.changedTouches[0].clientX - touchX; touchX = null;
+      if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1));
+    });
+    go(0);
+
+    // ---------- Moving product strip ----------
+    const strip = PRODUCTS.filter((x) => x.photo).map((prod) => `
+      <a class="mq-item" href="${productUrl(prod.id)}">
+        <img src="${prod.image}" alt="" loading="lazy" />
+        <span><b>${esc(prod.name)}</b><em>${inr(prod.price)}</em></span>
+      </a>`).join("");
+    $("#marquee").innerHTML = strip + strip.replace(/<a class="mq-item"/g, '<a class="mq-item" aria-hidden="true" tabindex="-1"');
 
     $("#catGrid").innerHTML = CATEGORIES.map((c) => {
       const n = PRODUCTS.filter((x) => x.cat === c.id).length;

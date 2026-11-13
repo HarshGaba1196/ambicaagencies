@@ -57,6 +57,7 @@ const PRODUCTS = [
   // Door handles
   p("dh-101", "Mortise Lever Handle Set", "door-handles", "mortise", 1450, 1890, "Antique Brass", "lever", "Solid zinc-alloy lever handle on plate with matching key escutcheon. Fits standard 35–45 mm doors.", "Bestseller"),
   p("dh-102", "Minimal Lever on Rose", "door-handles", "mortise", 1190, 1490, "Matte Black", "lever", "Slim modern lever with concealed screws. Pairs with any standard mortise lock.", "New"),
+  p("dh-107", "Satin Steel Lever Handle", "door-handles", "mortise", 990, 1290, "Satin Steel", "lever", "SS 304 tube lever on round rose — a clean, durable choice for bedroom and office doors."),
   p("dh-103", "Pull Handle 300 mm", "door-handles", "pull", 980, 1250, "Satin Steel", "pullbar", "Back-to-back SS 304 pull handle for main and glass doors. Corrosion resistant."),
   p("dh-104", "Square Pull Handle 450 mm", "door-handles", "pull", 1650, 2100, "Gold PVD", "pullbar", "Square-section SS pull handle with PVD gold coating that won't tarnish."),
   p("dh-105", "Main Door Handle 600 mm", "door-handles", "main-door", 3890, 4950, "Rose Gold", "pullbar", "Statement main-door pull handle in solid brass with hand-polished finish.", "Premium"),
@@ -67,6 +68,7 @@ const PRODUCTS = [
   p("hg-203", "Soft-Close Auto Hinge (Pair)", "hinges", "auto", 360, 480, "Nickel", "autohinge", "Clip-on hydraulic soft-close hinge for kitchen and wardrobe shutters. 0 mm crank.", "Bestseller"),
   p("hg-204", "Auto Hinge 8 mm Crank (Pair)", "hinges", "auto", 240, 320, "Nickel", "autohinge", "Standard auto hinge for inset shutters. 3D adjustable."),
   p("hg-205", "Brass Parliament Hinge 4\"", "hinges", "specialty", 690, 820, "Gold PVD", "hinge", "Projecting hinge that lets doors open past architraves. Solid brass construction."),
+  p("hg-207", "Decorative Strap Hinge 12\"", "hinges", "specialty", 1290, 1650, "Black Iron", "hinge", "Hand-forged ornamental strap hinge for heritage doors, gates and wooden chests.", "New"),
   p("hg-206", "Concealed Pivot Hinge", "hinges", "specialty", 2450, 3100, "Satin Steel", "autohinge", "Pivot hinge for flush, invisible doors up to 60 kg."),
   // Cabinet handles
   p("ch-301", "Profile Handle 160 mm", "cabinet-handles", "profile", 240, 320, "Brushed Gold", "pull", "Aluminium cabinet pull with 160 mm centre-to-centre. Includes screws.", "New"),
@@ -92,9 +94,11 @@ const PRODUCTS = [
   p("lk-602", "Cylinder Mortise Lock Set", "locks", "mortise-locks", 1690, 2150, "Satin Nickel", "lock", "Mortise lock with 60 mm computer key cylinder, 5 keys."),
   p("lk-603", "Tower Bolt 6\" (Pack of 2)", "locks", "bolts", 260, 340, "Stainless Steel", "bolt", "SS tower bolts for doors and windows. Smooth sliding action."),
   p("lk-604", "Aldrop 10\" Heavy", "locks", "bolts", 540, 690, "Antique Brass", "bolt", "Heavy aldrop for main and gate doors with padlock provision."),
+  p("lk-606", "Stainless Steel Padlock 50 mm", "locks", "bolts", 640, 820, "Stainless Steel", "lock", "Hardened shackle padlock with 3 keys. Weather resistant for gates and shutters."),
   p("lk-605", "Digital Smart Door Lock", "locks", "smart", 11990, 15990, "Black Glass", "smartlock", "Fingerprint, PIN, RFID card and key access. Auto-lock and low-battery alert.", "Premium"),
   // Bathroom
   p("ba-701", "Towel Rod 24\"", "bathroom", "towel", 890, 1190, "Chrome", "towel", "Solid brass towel rod with concealed fixing."),
+  p("ba-706", "Double Towel Rail 24\"", "bathroom", "towel", 1490, 1890, "Satin Steel", "towel", "Two-bar SS 304 towel rail that keeps bath and hand towels apart.", "Bestseller"),
   p("ba-702", "Towel Ring", "bathroom", "towel", 520, 690, "Matte Black", "towel", "Round towel ring for wash basin areas."),
   p("ba-703", "Robe Hook (Pack of 2)", "bathroom", "hooks", 340, 450, "Gold PVD", "hook", "Double robe hook in SS 304 with PVD gold finish.", "New"),
   p("ba-704", "Toilet Paper Holder", "bathroom", "hooks", 460, 590, "Chrome", "hook", "Paper holder with flap cover, brass body."),
@@ -121,6 +125,35 @@ const PRODUCTS = [
   p("ff-1104", "Bed Hydraulic Fitting Set", "furniture", "lifts", 3200, 3990, "Black", "gaslift", "Complete hydraulic lift mechanism for storage beds."),
   p("ff-1105", "Minifix Connector (Pack of 20)", "furniture", "connectors", 260, 340, "Zinc", "bolt", "Cam-lock connectors for knock-down furniture."),
 ];
+
+// ---------------------------------------------------------------------
+// Product photos. Free photos from Unsplash (https://unsplash.com/license)
+// keyed by product id. Replace with the client's own photos any time,
+// e.g. by setting  image: "assets/products/dh-101.jpg"  on a product.
+// ---------------------------------------------------------------------
+const photoUrl = (photoId, w = 700) => `https://images.unsplash.com/photo-${photoId}?auto=format&fit=crop&w=${w}&q=75`;
+const PHOTOS = {
+  "dh-101": "1607710533910-d7cdffd9e593", // gold lever on wooden door
+  "dh-102": "1583041398200-09b2205f6cf0", // black lever on wooden door
+  "dh-107": "1583691028182-e8f01e74bfa2", // silver lever on grey door
+  "hg-207": "1792182634926-d16b4a1058f5", // decorative strap hinge
+  "ch-301": "1693892985308-44965a6060d1", // metal handle on wooden cabinet
+  "ch-303": "1789381565624-cf9c65b7c2ba", // black bar handles on wood doors
+  "ka-401": "1678108040468-0cc9addd984d", // cutlery organiser drawer
+  "ka-402": "1676907229752-ac14b0152b92", // plate & cup drawer
+  "dc-504": "1676907228185-6869277a9f8f", // full-extension kitchen drawer
+  "lk-602": "1759452003649-552896c8ed63", // key in lock cylinder
+  "lk-604": "1787722907565-0973c641e285", // latch with brass padlock
+  "lk-606": "1555529902-5261145633bf",    // steel padlock
+  "ba-701": "1596683705523-eb49540c3934", // towel on steel bar
+  "ba-706": "1589898362790-edba11d34869", // towel rail
+};
+PRODUCTS.forEach((prod) => {
+  if (!prod.image && PHOTOS[prod.id]) { prod.photo = PHOTOS[prod.id]; prod.image = photoUrl(prod.photo); }
+});
+
+// Hero slider on the home page — product ids in display order.
+const HERO_SLIDES = ["ka-401", "dh-101", "ch-303", "ba-706", "lk-602", "dc-504"];
 
 // Gold line-art icons used as product visuals (matching the logo style).
 const ICONS = {
