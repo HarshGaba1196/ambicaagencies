@@ -137,7 +137,12 @@ function renderLayout(active = "") {
         <p class="footer-contact">${esc(STORE.phone)}<br/>${esc(STORE.email)}</p>
       </div>
     </div>
-    <div class="container footer-bottom">© ${new Date().getFullYear()} Ambica Agencies. All rights reserved.</div>
+    <div class="container footer-bottom">
+      <span>© ${new Date().getFullYear()} ${esc(STORE.legalName)}. All rights reserved.</span>
+      <nav class="footer-legal" aria-label="Policies">
+        <a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms & Conditions</a><a href="shipping.html">Shipping Policy</a><a href="returns.html">Returns & Refunds</a>
+      </nav>
+    </div>
   </footer>
   <div class="toast" id="toast" role="status"></div>`;
 
@@ -165,6 +170,9 @@ function renderLayout(active = "") {
   });
   document.addEventListener("click", (e) => { if (!all.contains(e.target)) { all.classList.remove("open"); btn.setAttribute("aria-expanded", false); } });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") all.classList.remove("open"); });
+
+  // Fill business details (<span data-store="phone">…</span>) from STORE in js/data.js
+  $$("[data-store]").forEach((el) => { const v = STORE[el.dataset.store]; if (v != null) el.textContent = el.dataset.store === "freeShippingAbove" || el.dataset.store === "shippingFee" ? inr(v) : v; });
 
   // Keep active category link visible in the scrolling bar
   $(".catnav-links a.active")?.scrollIntoView({ block: "nearest", inline: "center" });

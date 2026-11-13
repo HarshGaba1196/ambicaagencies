@@ -10,6 +10,14 @@ const STORE = {
   email: "sales@ambicaagencies.in",
   address: "Shop No. __, Market Road, Your City — PIN",
   hours: "Mon–Sat, 10:00 am – 8:00 pm",
+  // Used on the policy pages — TODO: confirm with the client
+  legalName: "Ambica Agencies",
+  gstin: "[GSTIN to be added]",
+  city: "[City]",
+  grievanceOfficer: "[Name of grievance officer]",
+  deliveryAreas: "[City] and nearby areas",
+  dispatchTime: "24–48 hours",
+  returnDays: "7",
   freeShippingAbove: 2999,
   shippingFee: 99,
 };

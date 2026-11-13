@@ -13,6 +13,12 @@ Plain HTML, CSS and JavaScript — no build step, no dependencies.
 | `cart.html` | Cart with quantities and order summary |
 | `checkout.html` | Delivery details & payment choice; sends the order to the shop on WhatsApp |
 | `about.html`, `contact.html` | About the business; contact details & bulk enquiry form |
+| `privacy.html`, `terms.html`, `shipping.html`, `returns.html` | Policy pages (templates — client to review) |
+| `404.html` | "Page not found" page |
+
+**Going live?** Follow [GO-LIVE.md](GO-LIVE.md) — client details checklist, domain, hosting, Google setup and payments.
+
+**SEO:** `python3 tools/build_seo.py https://www.your-domain` updates share/SEO tags on every page and regenerates `sitemap.xml` and `robots.txt`. Re-run it after adding products or changing the domain.
 
 ## Editing content
 
