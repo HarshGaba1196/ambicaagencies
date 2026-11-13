@@ -86,9 +86,16 @@ function renderLayout(active = "") {
         ${navLink("about.html", "About", "about")}
         ${navLink("contact.html", "Contact", "contact")}
       </nav>
-      <button class="theme-btn" id="themeBtn" aria-label="Switch colour theme">
-        <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
-        <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <button class="theme-switch" id="themeBtn" role="switch" aria-label="Dark mode">
+        <span class="ts-opt ts-light">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+          <em>Light</em>
+        </span>
+        <span class="ts-opt ts-dark">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+          <em>Dark</em>
+        </span>
+        <span class="ts-knob" aria-hidden="true"></span>
       </button>
       <a class="cart-btn" href="cart.html" aria-label="Cart">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"/><circle cx="10" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/></svg>
@@ -138,8 +145,8 @@ function renderLayout(active = "") {
   const themeBtn = $("#themeBtn");
   const syncThemeLabel = () => {
     const isLight = document.documentElement.dataset.theme === "light";
-    themeBtn.setAttribute("aria-label", isLight ? "Switch to dark mode" : "Switch to light mode");
-    themeBtn.title = isLight ? "Dark mode" : "Light mode";
+    themeBtn.setAttribute("aria-checked", String(!isLight));
+    themeBtn.title = isLight ? "Switch to dark mode" : "Switch to light mode";
   };
   themeBtn.addEventListener("click", () => {
     const next = document.documentElement.dataset.theme === "light" ? "dark" : "light";
