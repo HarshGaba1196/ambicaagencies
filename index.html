@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ambica Agencies — Hardware & Kitchen Accessories</title>
+  <meta name="description" content="Premium door handles, hinges, cabinet pulls, kitchen baskets and furniture hardware. Shop online from Ambica Agencies." />
+  <link rel="icon" href="assets/logo.webp" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow">Hardware & Kitchen Accessories</p>
+          <h1>Finishing touches,<br /><span class="gold">built to last.</span></h1>
+          <p class="lead">Architectural hardware, cabinet fittings and modular kitchen accessories — trusted by homeowners, carpenters and interior designers.</p>
+          <div class="hero-cta">
+            <a href="shop.html" class="btn btn-gold">Shop all products</a>
+            <a href="contact.html" class="btn btn-ghost">Bulk enquiry</a>
+          </div>
+          <ul class="trust">
+            <li><b id="productTotal">50+</b><span>Products</span></li>
+            <li><b id="catTotal">11</b><span>Categories</span></li>
+            <li><b>GST</b><span>Invoices</span></li>
+          </ul>
+        </div>
+        <div class="hero-art">
+          <div class="ring"><img src="assets/logo.webp" alt="Ambica Agencies logo" /></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2>Shop by category</h2>
+          <span class="rule"></span>
+          <a href="shop.html" class="see-all">View all →</a>
+        </div>
+        <div class="cat-grid" id="catGrid"></div>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="container">
+        <div class="section-head">
+          <h2>Bestsellers & new arrivals</h2>
+          <span class="rule"></span>
+          <a href="shop.html" class="see-all">Shop all →</a>
+        </div>
+        <div class="grid" id="featuredGrid"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container" id="catRows"></div>
+    </section>
+
+    <section class="section section-alt features">
+      <div class="container feat-grid">
+        <div class="feat"><span>01</span><h3>Quality checked</h3><p>Every piece inspected for finish and fit before dispatch.</p></div>
+        <div class="feat"><span>02</span><h3>Fast dispatch</h3><p>Orders packed and shipped within 24–48 hours.</p></div>
+        <div class="feat"><span>03</span><h3>Trade pricing</h3><p>Special rates for carpenters, builders and designers.</p></div>
+        <div class="feat"><span>04</span><h3>Easy returns</h3><p>7-day replacement on manufacturing defects.</p></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container cta-band">
+        <div>
+          <p class="eyebrow">For contractors & interior designers</p>
+          <h2>Buying for a project?</h2>
+          <p class="muted">Share your list and get a trade quotation within a few hours.</p>
+        </div>
+        <a href="contact.html" class="btn btn-gold">Request a quote</a>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    renderLayout("home");
+    $("#productTotal").textContent = PRODUCTS.length + "+";
+    $("#catTotal").textContent = CATEGORIES.length;
+
+    $("#catGrid").innerHTML = CATEGORIES.map((c) => {
+      const n = PRODUCTS.filter((x) => x.cat === c.id).length;
+      return `<a href="${catUrl(c.id)}" class="cat">${icon(c.icon)}<h3>${c.name}</h3><p>${n} products</p></a>`;
+    }).join("");
+
+    $("#featuredGrid").innerHTML = PRODUCTS.filter((x) => x.badge).slice(0, 8).map(productCard).join("");
+
+    // A few category showcase rows
+    $("#catRows").innerHTML = ["kitchen", "door-handles", "bathroom"].map((id) => {
+      const c = getCategory(id);
+      return `<div class="cat-row">
+        <div class="section-head"><h2>${c.name}</h2><span class="rule"></span><a href="${catUrl(id)}" class="see-all">View all →</a></div>
+        <div class="sub-pills">${c.subs.map(([s, n]) => `<a href="${catUrl(id, s)}">${n}</a>`).join("")}</div>
+        <div class="grid">${PRODUCTS.filter((x) => x.cat === id).slice(0, 4).map(productCard).join("")}</div>
+      </div>`;
+    }).join("");
+  </script>
+</body>
+</html>

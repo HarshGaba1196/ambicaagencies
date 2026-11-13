@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Checkout — Ambica Agencies</title>
+  <link rel="icon" href="assets/logo.webp" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div id="site-header"></div>
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <nav class="crumbs"><a href="index.html">Home</a><i>›</i><a href="cart.html">Cart</a><i>›</i><span>Checkout</span></nav>
+        <h1 id="checkoutTitle">Checkout</h1>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container" id="checkoutPage"></div>
+    </section>
+  </main>
+  <div id="site-footer"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    renderLayout();
+    const items = Cart.items();
+
+    if (!items.length) {
+      $("#checkoutPage").innerHTML = `<div class="empty"><p>Your cart is empty.</p><a href="shop.html" class="btn btn-gold">Start shopping</a></div>`;
+    } else {
+      const t = Cart.totals();
+      $("#checkoutPage").innerHTML = `<div class="cart-layout">
+        <form class="card form checkout-form" id="checkoutForm">
+          <h3>Delivery details</h3>
+          <div class="form-row">
+            <label>Full name<input required name="name" autocomplete="name" /></label>
+            <label>Mobile number<input required name="phone" inputmode="tel" pattern="[0-9+ ]{10,14}" autocomplete="tel" /></label>
+          </div>
+          <label>Email (optional)<input type="email" name="email" autocomplete="email" /></label>
+          <label>Address<textarea required name="address" rows="3" autocomplete="street-address"></textarea></label>
+          <div class="form-row">
+            <label>City<input required name="city" autocomplete="address-level2" /></label>
+            <label>PIN code<input required name="pin" inputmode="numeric" pattern="[0-9]{6}" autocomplete="postal-code" /></label>
+          </div>
+          <label>GSTIN (optional, for business invoice)<input name="gstin" /></label>
+          <h3>Payment method</h3>
+          <div class="pay-opts">
+            <label class="pay-opt"><input type="radio" name="pay" value="Cash on Delivery" checked /> Cash on Delivery</label>
+            <label class="pay-opt"><input type="radio" name="pay" value="UPI / Online" /> UPI / Online payment <small class="muted">(payment link shared on confirmation)</small></label>
+            <label class="pay-opt"><input type="radio" name="pay" value="Store Pickup" /> Pick up from store</label>
+          </div>
+          <button class="btn btn-gold btn-block" type="submit">Place order · ${inr(t.total)}</button>
+        </form>
+        <aside class="card summary">
+          <h3>Order summary</h3>
+          ${items.map((i) => `<div class="sum-item"><span class="mini">${visual(i)}</span><span>${esc(i.name)}<small>Qty ${i.qty}</small></span><b>${inr(i.price * i.qty)}</b></div>`).join("")}
+          <div class="sum-row"><span>Subtotal</span><span>${inr(t.subtotal)}</span></div>
+          <div class="sum-row"><span>Delivery</span><span>${t.shipping ? inr(t.shipping) : "Free"}</span></div>
+          <div class="sum-row total"><span>Total <small>(incl. GST)</small></span><span>${inr(t.total)}</span></div>
+          <a href="cart.html" class="back-link">← Edit cart</a>
+        </aside>
+      </div>`;
+
+      $("#checkoutForm").onsubmit = (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const orderId = "AA" + Date.now().toString().slice(-6);
+        const lines = [
+          `*New order ${orderId} — ${STORE.name}*`, "",
+          ...items.map((i) => `• ${i.name} (${i.finish}) × ${i.qty} = ${inr(i.price * i.qty)}`), "",
+          `Subtotal: ${inr(t.subtotal)}`, `Delivery: ${t.shipping ? inr(t.shipping) : "Free"}`, `*Total: ${inr(t.total)}*`, "",
+          `Name: ${fd.get("name")}`, `Phone: ${fd.get("phone")}`,
+          fd.get("email") ? `Email: ${fd.get("email")}` : null,
+          `Address: ${fd.get("address")}, ${fd.get("city")} - ${fd.get("pin")}`,
+          fd.get("gstin") ? `GSTIN: ${fd.get("gstin")}` : null,
+          `Payment: ${fd.get("pay")}`,
+        ].filter((l) => l !== null);
+
+        Cart.clear();
+        $("#checkoutTitle").textContent = "Order placed";
+        $("#checkoutPage").innerHTML = `<div class="card success">
+          <div class="tick">✓</div>
+          <h2>Thank you, ${esc(fd.get("name"))}!</h2>
+          <p class="muted">Order <b>${orderId}</b> · ${inr(t.total)} · ${esc(fd.get("pay"))}</p>
+          <p class="muted">Tap below to send your order to us on WhatsApp. We'll confirm availability and delivery time.</p>
+          <a class="btn btn-gold" href="${whatsappUrl(lines.join("\n"))}" target="_blank" rel="noopener">Send order on WhatsApp</a>
+          <a class="back-link" href="shop.html">Continue shopping</a>
+        </div>`;
+        scrollTo({ top: 0, behavior: "smooth" });
+      };
+    }
+  </script>
+</body>
+</html>

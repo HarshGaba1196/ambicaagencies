@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Your Cart — Ambica Agencies</title>
+  <link rel="icon" href="assets/logo.webp" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div id="site-header"></div>
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <nav class="crumbs"><a href="index.html">Home</a><i>›</i><span>Cart</span></nav>
+        <h1>Your cart</h1>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container" id="cartPage"></div>
+    </section>
+  </main>
+  <div id="site-footer"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    renderLayout();
+
+    function summary() {
+      const t = Cart.totals(), remaining = STORE.freeShippingAbove - t.subtotal;
+      return `<aside class="card summary">
+        <h3>Order summary</h3>
+        <div class="sum-row"><span>Subtotal</span><span>${inr(t.subtotal)}</span></div>
+        <div class="sum-row"><span>Delivery</span><span>${t.shipping ? inr(t.shipping) : "Free"}</span></div>
+        <div class="sum-row total"><span>Total <small>(incl. GST)</small></span><span>${inr(t.total)}</span></div>
+        <p class="ship-note">${remaining > 0 ? `Add ${inr(remaining)} more for free delivery` : "You've unlocked free delivery ✓"}</p>
+        <a href="checkout.html" class="btn btn-gold btn-block">Proceed to checkout</a>
+        <a href="shop.html" class="btn btn-ghost btn-block">Continue shopping</a>
+      </aside>`;
+    }
+
+    function render() {
+      const items = Cart.items();
+      if (!items.length) {
+        $("#cartPage").innerHTML = `<div class="empty"><p>Your cart is empty.</p><a href="shop.html" class="btn btn-gold">Start shopping</a></div>`;
+        return;
+      }
+      $("#cartPage").innerHTML = `<div class="cart-layout">
+        <div class="card cart-list">
+          ${items.map((i) => `<div class="line-item">
+            <a class="mini" href="${productUrl(i.id)}">${visual(i)}</a>
+            <div>
+              <a href="${productUrl(i.id)}"><h4>${esc(i.name)}</h4></a>
+              <small>${esc(i.finish)} · ${inr(i.price)} each</small>
+              <div class="qty"><button data-set="${i.id}" data-v="${i.qty - 1}" aria-label="Decrease">−</button><span>${i.qty}</span><button data-set="${i.id}" data-v="${i.qty + 1}" aria-label="Increase">+</button></div>
+            </div>
+            <div class="right"><b>${inr(i.price * i.qty)}</b><button class="remove" data-set="${i.id}" data-v="0">Remove</button></div>
+          </div>`).join("")}
+        </div>
+        ${summary()}
+      </div>`;
+    }
+
+    $("#cartPage").addEventListener("click", (e) => {
+      const b = e.target.closest("[data-set]");
+      if (b) { Cart.setQty(b.dataset.set, Number(b.dataset.v)); render(); }
+    });
+    render();
+  </script>
+</body>
+</html>

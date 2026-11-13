@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact — Ambica Agencies</title>
+  <link rel="icon" href="assets/logo.webp" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div id="site-header"></div>
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <nav class="crumbs"><a href="index.html">Home</a><i>›</i><span>Contact</span></nav>
+        <h1>Contact & bulk orders</h1>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container contact">
+        <div>
+          <p class="eyebrow">Get in touch</p>
+          <h2>Visit or call us</h2>
+          <ul class="contact-list" id="contactList"></ul>
+        </div>
+        <form class="card form" id="enquiryForm">
+          <h3>Bulk / project enquiry</h3>
+          <input required name="name" placeholder="Your name" autocomplete="name" />
+          <input required name="phone" placeholder="Phone number" inputmode="tel" autocomplete="tel" />
+          <select name="cat" id="enqCat"><option value="">Category (optional)</option></select>
+          <textarea name="msg" rows="5" placeholder="What do you need? (items, quantity, finish)"></textarea>
+          <button class="btn btn-gold" type="submit">Send enquiry on WhatsApp</button>
+        </form>
+      </div>
+    </section>
+  </main>
+  <div id="site-footer"></div>
+  <script src="js/data.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    renderLayout("contact");
+    $("#contactList").innerHTML = [
+      ["Address", STORE.address], ["Phone / WhatsApp", STORE.phone], ["Email", STORE.email], ["Hours", STORE.hours],
+    ].map(([k, v]) => `<li><b>${k}</b><span>${esc(v)}</span></li>`).join("");
+    $("#enqCat").innerHTML += CATEGORIES.map((c) => `<option>${c.name}</option>`).join("");
+    $("#enquiryForm").onsubmit = (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const text = `*Bulk enquiry — ${STORE.name}*\nName: ${fd.get("name")}\nPhone: ${fd.get("phone")}` +
+        (fd.get("cat") ? `\nCategory: ${fd.get("cat")}` : "") + `\n\n${fd.get("msg") || ""}`;
+      window.open(whatsappUrl(text), "_blank", "noopener");
+      e.target.reset();
+      toast("Opening WhatsApp…");
+    };
+  </script>
+</body>
+</html>

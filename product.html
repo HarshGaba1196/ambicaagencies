@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Product — Ambica Agencies</title>
+  <link rel="icon" href="assets/logo.webp" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div id="site-header"></div>
+  <main>
+    <section class="section pdp-section"><div class="container" id="pdp"></div></section>
+    <section class="section section-alt" id="relatedSection">
+      <div class="container">
+        <div class="section-head"><h2>You may also like</h2><span class="rule"></span><a class="see-all" id="relatedAll" href="shop.html">View all →</a></div>
+        <div class="grid" id="relatedGrid"></div>
+      </div>
+    </section>
+  </main>
+  <div id="site-footer"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    renderLayout("shop");
+    const prod = PRODUCTS.find((x) => x.id === param("id"));
+
+    if (!prod) {
+      $("#pdp").innerHTML = `<div class="empty"><h1>Product not found</h1><p class="muted">It may have been removed or the link is incorrect.</p><a class="btn btn-gold" href="shop.html">Browse products</a></div>`;
+      $("#relatedSection").remove();
+    } else {
+      const cat = getCategory(prod.cat);
+      const subName = getSubName(prod.cat, prod.sub);
+      const off = Math.round((1 - prod.price / prod.mrp) * 100);
+      document.title = `${prod.name} — Ambica Agencies`;
+      let qty = 1;
+
+      $("#pdp").innerHTML = `
+        ${breadcrumb([["Home", "index.html"], [cat.name, catUrl(cat.id)], [subName, catUrl(cat.id, prod.sub)], [prod.name]])}
+        <div class="pdp">
+          <div class="pdp-media">
+            ${prod.badge ? `<span class="badge">${prod.badge}</span>` : ""}
+            ${visual(prod)}
+          </div>
+          <div class="pdp-info">
+            <a class="p-cat" href="${catUrl(cat.id, prod.sub)}">${cat.name} · ${subName}</a>
+            <h1>${esc(prod.name)}</h1>
+            <div class="pdp-price">
+              <b>${inr(prod.price)}</b><s>${inr(prod.mrp)}</s>
+              ${off > 0 ? `<span class="save">Save ${inr(prod.mrp - prod.price)} (${off}%)</span>` : ""}
+            </div>
+            <p class="small muted">Inclusive of all taxes</p>
+            <p class="desc">${esc(prod.desc)}</p>
+            <div class="pdp-actions">
+              <div class="qty qty-lg"><button data-q="-1" aria-label="Decrease">−</button><span id="qty">1</span><button data-q="1" aria-label="Increase">+</button></div>
+              <button class="btn btn-ghost" id="addBtn">Add to cart</button>
+              <button class="btn btn-gold" id="buyBtn">Buy now</button>
+            </div>
+            <ul class="perks">
+              <li>✓ Dispatch in 24–48 hours</li>
+              <li>✓ Free delivery above ${inr(STORE.freeShippingAbove)}</li>
+              <li>✓ 7-day replacement on defects</li>
+              <li>✓ GST invoice available</li>
+            </ul>
+            <table class="specs-table">
+              <tr><th>SKU</th><td>${prod.id.toUpperCase()}</td></tr>
+              <tr><th>Category</th><td>${cat.name}</td></tr>
+              <tr><th>Type</th><td>${subName}</td></tr>
+              <tr><th>Finish</th><td>${esc(prod.finish)}</td></tr>
+            </table>
+            <a class="enquire" href="${whatsappUrl(`Hi, I'd like to know more about ${prod.name} (${prod.id.toUpperCase()}).`)}" target="_blank" rel="noopener">Have a question or need bulk quantity? Ask on WhatsApp →</a>
+          </div>
+        </div>`;
+
+      $(".pdp-actions").addEventListener("click", (e) => {
+        const q = e.target.closest("[data-q]");
+        if (q) { qty = Math.max(1, qty + Number(q.dataset.q)); $("#qty").textContent = qty; }
+      });
+      $("#addBtn").onclick = () => Cart.add(prod.id, qty);
+      $("#buyBtn").onclick = () => { Cart.add(prod.id, qty); location.href = "checkout.html"; };
+
+      const related = PRODUCTS.filter((x) => x.cat === prod.cat && x.id !== prod.id).slice(0, 4);
+      $("#relatedAll").href = catUrl(cat.id);
+      $("#relatedGrid").innerHTML = related.map(productCard).join("");
+    }
+  </script>
+</body>
+</html>
